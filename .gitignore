@@ -1,0 +1,32 @@
+# Python build and bytecode
+__pycache__/
+*.pyc
+*.pyo
+build/
+dist/
+*.egg-info/
+
+# Tool caches
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# Environments
+.venv/
+venv/
+
+# Machine-learning checkpoints: too large for git, and never part of a release
+*.pt
+*.pth
+*.ckpt
+
+# Calculation output written next to the code while running the workflow
+outputs/
+example_output/
+
+# Editor and OS files
+.idea/
+.vscode/
+.DS_Store

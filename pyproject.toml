@@ -1,0 +1,106 @@
+[build-system]
+requires = ["setuptools>=77", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "materials-discovery-skills"
+version = "0.1.0"
+description = "An agent-drivable workflow for generative design, MLIP prescreening and DFT validation of inorganic semiconductors."
+readme = "README.md"
+# pymatgen and mp-api both require Python 3.11 or newer, so this package cannot support 3.10.
+requires-python = ">=3.11"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{ name = "Benhao Zhu" }, { name = "Jiahao Xie" }]
+keywords = [
+    "materials-discovery",
+    "convex-hull",
+    "machine-learning-interatomic-potential",
+    "vasp",
+    "pymatgen",
+]
+# Only the versions the CI test matrix actually runs are claimed here.
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Chemistry",
+    "Topic :: Scientific/Engineering :: Physics",
+]
+# Every package listed here is imported at module import time somewhere under src/matdisc.
+# Lower bounds are the oldest releases carrying the APIs this package calls; the versions the
+# test suite is exercised against are newer (see .github/workflows/ci.yml).
+dependencies = [
+    "pymatgen>=2024.6",       # Composition, Structure, PhaseDiagram, io.vasp.sets.VaspInputSet, io.ase
+    "mp-api>=0.41",           # MPRester(...).materials.summary.search
+    "ase>=3.23",              # Atoms, optimizers, ase.phonons
+    "monty>=2024.7",          # MSONable, imported directly by the config and result objects
+    "numpy>=1.26",
+    "pandas>=2.0",
+    "pyyaml>=6.0",
+    "matplotlib>=3.8",        # phonon band-structure plotting
+]
+
+# MatterGen is driven through its `mattergen-generate` console script rather than imported, and is
+# installed from its own repository, so it is deliberately not an extra here. See
+# src/matdisc/generation/mattergen.py and the structure-generation skill.
+[project.optional-dependencies]
+# Names must match the install hints raised by the lazy imports in src/matdisc.
+mlip = [
+    "deepmd-kit>=3.0",        # DPA-3 descriptors and fine-tuning
+    "dpdata>=0.2",            # VASP output -> deepmd/npy training set
+]
+clustering = [
+    "maml",                   # DIRECT sampling; no release-date bound, the API used is stable
+    "scikit-learn>=1.3",      # BIRCH clustering, pulled in by maml as well
+]
+# The linter floors are the versions CI pins (see .github/workflows/ci.yml). An older ruff or an
+# older black formats differently enough that a contributor could pass locally and turn CI red.
+dev = [
+    "pytest>=8.0",
+    "ruff>=0.16.8",
+    "black>=26.5.1",
+]
+
+[project.urls]
+Homepage = "https://github.com/Material-Intelligence/materials-discovery-skills"
+Repository = "https://github.com/Material-Intelligence/materials-discovery-skills"
+
+[project.scripts]
+matdisc = "matdisc.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["matdisc*"]
+namespaces = false
+
+[tool.black]
+line-length = 120
+target-version = ["py311"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py311"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "D"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["D"]
+"examples/*" = ["D"]
+
+[tool.pytest.ini_options]
+minversion = "8.0"
+testpaths = ["tests"]
+addopts = "-ra --strict-markers --strict-config"
+markers = [
+    "network: test reaches the network and needs MP_API_KEY in the environment",
+    "gpu: test needs a GPU",
+    "extras: test needs an optional backend (deepmd-kit, dpdata, maml or MatterGen)",
+]

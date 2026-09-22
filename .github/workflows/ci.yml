@@ -1,0 +1,112 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    name: lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v10
+        with:
+          python-version: "3.11"
+          enable-cache: true
+
+      # Linter versions are pinned so a new release cannot turn this job red on its own.
+      - name: Lint with ruff
+        run: uvx ruff@0.16.8 check .
+
+      - name: Check formatting with black
+        run: uvx black@26.5.1 --check .
+
+      # Refuses to pass on credentials, site-specific paths, out-of-scope chemistry, CJK text or
+      # packaging metadata that no longer matches the source tree. No third-party dependencies.
+      - name: Pre-publication scan
+        run: uv run --no-project --python 3.11 -- python tools/release_check.py
+
+      # Both artefacts, because the sdist is the one that silently loses files: without
+      # MANIFEST.in setuptools ships a partial tests/ that cannot even be collected.
+      - name: Build the wheel and the source distribution
+        run: uv build
+
+      - name: Check that the source distribution carries a runnable test suite
+        run: |
+          set -eu
+          mkdir -p sdist-check
+          tar xzf dist/*.tar.gz -C sdist-check --strip-components=1
+          cd sdist-check
+          uv venv --python 3.11
+          uv pip install --python .venv ".[dev]"
+          .venv/bin/python -m pytest -q -m "not network and not gpu and not extras"
+
+  test:
+    name: test (python ${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # pymatgen and mp-api both require Python 3.11 or newer.
+        python-version: ["3.11", "3.12"]
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v10
+        with:
+          python-version: ${{ matrix.python-version }}
+          enable-cache: true
+
+      - name: Create the environment
+        run: |
+          uv venv --python ${{ matrix.python-version }}
+          echo "$PWD/.venv/bin" >> "$GITHUB_PATH"
+
+      # Only the default dependencies plus the dev tools: deepmd-kit, dpdata, maml and MatterGen
+      # are optional backends, and every module that uses one imports it inside a function.
+      - name: Install the package
+        run: uv pip install -e ".[dev]"
+
+      - name: Import the package
+        run: python -c "import matdisc; print(matdisc.__version__)"
+
+      # Every submodule must import without any optional backend installed.
+      - name: Import every module
+        run: |
+          python - <<'PY'
+          import importlib
+          import pkgutil
+          import sys
+
+          import matdisc
+
+          failures = []
+          for module in pkgutil.walk_packages(matdisc.__path__, "matdisc."):
+              try:
+                  importlib.import_module(module.name)
+              except Exception as exc:  # noqa: BLE001 - report every failure, not just the first
+                  failures.append(f"{module.name}: {type(exc).__name__}: {exc}")
+          for failure in failures:
+              print(failure)
+          print(f"{len(failures)} import failure(s)")
+          sys.exit(1 if failures else 0)
+          PY
+
+      - name: Check the command-line interface
+        run: matdisc --help
+
+      - name: Run the test suite
+        run: pytest -m "not network and not gpu and not extras"

@@ -1,0 +1,38 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite both the software and the paper it was abstracted from."
+type: software
+title: "materials-discovery-skills: an agent-drivable workflow for generative design, MLIP prescreening and DFT validation of inorganic semiconductors"
+version: 0.1.0
+date-released: "2026-09-22"
+license: MIT
+repository-code: "https://github.com/Material-Intelligence/materials-discovery-skills"
+authors:
+  - given-names: Benhao
+    family-names: Zhu
+  - given-names: Jiahao
+    family-names: Xie
+preferred-citation:
+  type: article
+  title: "Robust AI-Driven Discovery of Electronic Metal Phosphide Semiconductors"
+  year: 2026
+  journal: "arXiv"
+  url: "https://arxiv.org/abs/2606.10251"
+  identifiers:
+    - type: other
+      value: "arXiv:2606.10251"
+      description: "arXiv preprint identifier"
+  authors:
+    - given-names: Benhao
+      family-names: Zhu
+    - given-names: Muhammad
+      family-names: Faizan
+    - given-names: Zewei
+      family-names: Li
+    - given-names: Wenshuo
+      family-names: Li
+    - given-names: Feifei
+      family-names: Ren
+    - given-names: Jiahao
+      family-names: Xie
+    - given-names: Lijun
+      family-names: Zhang
