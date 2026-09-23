@@ -12,11 +12,10 @@ notice alongside the third-party software list.
 > to accelerating materials innovation", *APL Materials* **1**, 011002 (2013).
 > doi:[10.1063/1.4812323](https://doi.org/10.1063/1.4812323)
 
-Retrieved from the Materials Project API. The retrieval predates this repository: the files
-were produced by an earlier run of the same harvest, and the database version current at that
-time was not recorded. Treat the values as a frozen snapshot for demonstration, not as the
-Materials Project's current numbers — re-run `examples/01_competing_phases.py` with your own
-key for those.
+Retrieved from the Materials Project API. The retrieval date and database version were not
+recorded. Treat the values as a frozen snapshot for demonstration, not as the Materials
+Project's current numbers — re-run `examples/01_competing_phases.py` with your own key for
+those.
 
 ICSD collection codes appear in the file names and in the `icsd_ids` column. They are
 Materials Project cross-references to the Inorganic Crystal Structure Database; no ICSD data
@@ -48,9 +47,8 @@ energy, rather than silently producing a wrong hull.
 
 The `composition` and `natoms` columns were re-derived with `pymatgen.core.Composition` from
 `formula_pretty`. One row changes as a result: `mp-8279`, whose Materials Project formula is
-`Ba(CdP)2`. The formula parser this package replaced ignored the parenthesis multiplier and
-recorded that phase as `BaCdP` with three atoms — which is a different compound, and the
-target ternary of this very chemical system.
+`Ba(CdP)2`. It is now recorded as BaCd2P2 with five atoms per formula unit; it had been
+recorded as `BaCdP` with three.
 
 ### `examples/data/structures/`
 

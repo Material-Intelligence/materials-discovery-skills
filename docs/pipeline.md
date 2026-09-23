@@ -1,9 +1,7 @@
 # The pipeline, stage by stage
 
-This document describes what each of the seven stages consumes and produces, which command runs
-it, what it needs installed, and how it corresponds to the workflow of
-[arXiv:2606.10251](https://arxiv.org/abs/2606.10251). The short version of the map is in the
-README; this is the long one.
+Inputs, outputs, commands and requirements of the seven stages, and how they map onto the
+workflow of [arXiv:2606.10251](https://arxiv.org/abs/2606.10251).
 
 ## What the paper does, and what is here
 
@@ -130,12 +128,12 @@ loaded model does not know about is reported by name rather than crashing in a l
 - **Needs:** nothing to write the inputs. Real POTCARs need `$PMG_VASP_PSP_DIR`; running the jobs
   needs your own licensed VASP, reached through `$VASP_CMD`, and a SLURM cluster.
 
-Inputs are built with `pymatgen.io.vasp.sets`, carrying over the convergence settings of the
-original templates: `EDIFF = 1e-05`, `EDIFFG = -0.01` on the relaxations, `KSPACING = 0.189`,
-`ENCUT` at 1.3 × the largest `ENMAX` of the POTCARs, and a line-mode k-path for `--kind band`. The
-functional is plain PBE with no Hubbard U — pymatgen's Materials Project sets apply a +U only to
-oxides and fluorides, so a phosphide INCAR carries no `LDAU` tag. Set anything else, a U included,
-with `user_incar_settings` in the configuration.
+Inputs are built with `pymatgen.io.vasp.sets`, with these convergence settings: `EDIFF = 1e-05`,
+`EDIFFG = -0.01` on the relaxations, `KSPACING = 0.189`, `ENCUT` at 1.3 × the largest `ENMAX` of
+the POTCARs, and a line-mode k-path for `--kind band`. The functional is plain PBE with no
+Hubbard U — pymatgen's Materials Project sets apply a +U only to oxides and fluorides, so a
+phosphide INCAR carries no `LDAU` tag. Set anything else, a U included, with
+`user_incar_settings` in the configuration.
 
 `--kind band`, `--kind hse-relax` and `--kind hse-static` are continuation runs: their INCAR reads a
 charge density (`ICHARG` 11, 1 and 1), so a `CHGCAR` from a converged `--kind static` run on the
@@ -176,8 +174,8 @@ configuration names a checkpoint of its own.
 - **Out:** `competing_phases.csv` with columns `material_id`, `formula_pretty`, `composition`,
   `natoms`, `formation_energy_per_atom`, `energy_per_atom`, `is_stable_mp`, `icsd_ids`; and
   `structures/` with the relaxed Materials Project structure behind each id.
-- **Needs:** network access and a Materials Project key in `$MP_API_KEY`. No key is stored in this
-  repository; without one the stage stops with a message saying where to get one.
+- **Needs:** network access and a Materials Project key in `$MP_API_KEY`. Without one the stage
+  stops with a message saying where to get one.
 
 A hull rests on every subsystem, so a Ba-Cd-P search queries Ba, Cd, P, Ba-Cd, Ba-P, Cd-P and
 Ba-Cd-P — seven queries, because the Materials Project matches `chemsys` exactly. By default only

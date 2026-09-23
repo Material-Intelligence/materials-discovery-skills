@@ -13,16 +13,14 @@ Three steps, one module each:
 - `matdisc.dft.outputs` reads finished runs with `pymatgen.io.vasp.outputs` into a table the
   convex-hull and fine-tuning stages consume.
 
-Nothing here requires VASP to be installed to write inputs. The settings of the original
-screening runs are carried over: `EDIFF = 1e-05`, `EDIFFG = -0.01` (a force criterion, on the
-relaxations only), `KSPACING = 0.189`, `ENCUT = ceil(1.3 * max ENMAX)` read from the POTCARs,
-and spin polarisation off.
+Nothing here requires VASP to be installed to write inputs. The convergence settings are
+`EDIFF = 1e-05`, `EDIFFG = -0.01` (a force criterion, on the relaxations only),
+`KSPACING = 0.189`, `ENCUT = ceil(1.3 * max ENMAX)` read from the POTCARs, and spin
+polarisation off.
 
-**The functional is plain PBE, with no Hubbard U.** The original template asked for
-`pbe ldau`, but pymatgen's Materials Project sets apply a +U only to oxides and fluorides, so
-for a phosphide no `LDAU`, `LDAUU` or `LDAUJ` tag is written at all. Nothing here adds one
-behind your back, and nothing here silently omits one you asked for: if your workflow does
-apply a U to these systems, pass `LDAU`, `LDAUTYPE`, `LDAUL`, `LDAUU` and `LDAUJ` through
+**The functional is plain PBE, with no Hubbard U.** pymatgen's Materials Project sets apply
+a +U only to oxides and fluorides, so for a phosphide no `LDAU`, `LDAUU` or `LDAUJ` tag is
+written. To apply a U, pass `LDAU`, `LDAUTYPE`, `LDAUL`, `LDAUU` and `LDAUJ` through
 `user_incar_settings` and record which elements carry which U. A hull built from PBE energies
 and one built from PBE+U energies are not comparable.
 
@@ -136,8 +134,7 @@ relaxation produces.
   substitution is logged. Inputs written this way are for inspection, not for production.
 - **The submission script is deliberately bare.** Module loads and environment exports are
   empty by default because they are site-specific; add yours through `SlurmSettings(modules=
-  [...], exports=[...])` or by editing the generated script. There is no hidden machine
-  tuning in it.
+  [...], exports=[...])` or by editing the generated script.
 - **`band`, `hse-relax` and `hse-static` are continuation runs.** Their INCAR sets `ICHARG` to
   read a charge density (11 for `band`, 1 for both hybrids), so the directory as written cannot
   start: run `--kind static` on the same structure first and copy its `CHGCAR` in. That is

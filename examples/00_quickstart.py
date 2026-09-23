@@ -2,8 +2,8 @@
 """Offline quickstart: place three candidates on a convex hull.
 
 Runs in about a second. No Materials Project key, no network, no GPU, no VASP, no
-machine-learning checkpoint -- only pymatgen, pandas and numpy, which ``pip install
-materials-discovery-skills`` already brings in.
+machine-learning checkpoint -- only pymatgen, pandas and numpy, which the base install
+(``pip install -e .``) already brings in.
 
 The numbers come from :func:`matdisc.screening.hull.toy_system`: a small synthetic Ba-Cd-P
 system chosen to exercise the three outcomes of the stability test. They are round made-up

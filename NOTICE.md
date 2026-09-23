@@ -78,4 +78,4 @@ appear in file names and in the `icsd_ids` column are Materials Project cross-re
 data.
 
 Access to the Materials Project API requires your own key, read from the `MP_API_KEY`
-environment variable. No key is stored in this repository.
+environment variable.

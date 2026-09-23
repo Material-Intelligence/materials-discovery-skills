@@ -116,8 +116,8 @@ Output under `<outdir>`:
 
 - **Without `--run`, nothing is trained and no checkpoint exists.** The stage says so
   explicitly and names the script to submit. A later screening stage then uses the checkpoint
-  named in its own configuration, not a fine-tuned one. This is the honest default: training
-  belongs in a batch job, not in the middle of a pipeline call.
+  named in its own configuration, not a fine-tuned one. Training belongs in a batch job, not
+  inside a pipeline call.
 - **`--exclude` matches the directory holding an OUTCAR, not the frames inside it.** With the
   flat layout the DFT stage writes there is one such directory per system, so `--exclude`
   drops whole systems. It is the nested, step-per-directory layout where `--exclude S0` drops

@@ -6,11 +6,12 @@ Metal Phosphide Semiconductors*: generate candidate structures for a chemical sy
 representative subset worth a DFT calculation, fine-tune a machine-learning interatomic potential
 on those DFT labels, harvest the competing phases of the system from the Materials Project, and
 screen the candidates for thermodynamic (convex hull) and dynamical (phonon) stability. `skills/`
-carries the same seven stages as `SKILL.md` files — the documentation layer an agent reads to
-decide which command to run. This repository is the tooling only: no candidate list, no
-trained checkpoint and no calculation output from the paper ships here. Ba-Cd-P is the worked
-example throughout, and structures, compositions, phase diagrams and VASP inputs all go through
-[pymatgen](https://github.com/materialsproject/pymatgen).
+holds seven agent skills (`SKILL.md` files) that tell an agent which command to run: six cover
+the seven stages (`stability-screening` covers both the hull and the phonon check), and
+`unified-workflow` covers the whole pipeline. This repository is the tooling only: no candidate
+list, no trained checkpoint and no calculation output from the paper ships here. Ba-Cd-P is the
+worked example throughout, and structures, compositions, phase diagrams and VASP inputs all go
+through [pymatgen](https://github.com/materialsproject/pymatgen).
 
 The paper expands its candidate space two ways, by ICSD-derived Wyckoff-site substitution and by
 conditional generation with MatterGen. Only the MatterGen route is implemented here.
@@ -78,9 +79,8 @@ From a clone of this repository:
 uv pip install -e .
 ```
 
-`pip install -e .` works the same way. The package needs Python 3.11 or newer — pymatgen and
-mp-api both require it — and every command in this README was run on 3.11. Optional backends are
-declared as extras:
+`pip install -e .` works the same way. The package needs Python 3.11 or newer, because pymatgen
+and mp-api both require it. Optional backends are declared as extras:
 
 | Extra | Pulls in | For |
 |---|---|---|
@@ -94,10 +94,10 @@ against your own CUDA and compiler stack. MatterGen is not an extra: it is insta
 repository (<https://github.com/microsoft/mattergen>) and is driven through its
 `mattergen-generate` console script rather than imported, so nothing here can pull it in for you.
 
-Two environment variables are read when the corresponding stage runs, and nothing is stored in
-this repository: `MP_API_KEY` (a Materials Project key, issued at
-<https://materialsproject.org/api>) and `DPA3_MODEL_PATH` (your machine-learning potential
-checkpoint). `VASP_CMD` and `PMG_VASP_PSP_DIR` are read on the machine where VASP actually runs.
+Two environment variables are read when the corresponding stage runs: `MP_API_KEY` (a Materials
+Project key, issued at <https://materialsproject.org/api>) and `DPA3_MODEL_PATH` (your
+machine-learning potential checkpoint). `VASP_CMD` and `PMG_VASP_PSP_DIR` are read on the
+machine where VASP actually runs.
 
 ## Five seconds, offline
 
@@ -148,7 +148,7 @@ by `pymatgen.core.Composition`, so a nested formula such as `Ba(CdP)2` keeps its
 ```
 src/matdisc/        the package: common/ generation/ clustering/ dft/ finetune/
                     competing/ screening/ pipeline/, plus the matdisc console script
-skills/             seven SKILL.md files, one per stage, plus unified-workflow
+skills/             seven agent skills (SKILL.md): six stage skills plus unified-workflow
 examples/           runnable examples, starting with the offline quickstart
 tests/              unit tests; network and GPU tests are marked
 docs/               pipeline.md and the provenance of the bundled data

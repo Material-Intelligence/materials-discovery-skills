@@ -18,8 +18,7 @@ keeps its multiplier and reduces to the same canonical string every time.
 
 - The package itself: `pip install -e .` from the repository root. `mp-api` and `pymatgen`
   are required dependencies, so no extra is needed for this skill.
-- `MP_API_KEY` must be set. The key is read from the environment at call time and is never
-  written to a file in this repository:
+- `MP_API_KEY` must be set. The key is read from the environment at call time:
 
   ```bash
   export MP_API_KEY=your_key_here     # keys are issued at https://materialsproject.org/api
