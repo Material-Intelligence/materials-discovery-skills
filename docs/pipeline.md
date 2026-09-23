@@ -49,8 +49,6 @@ the same contents into the directory you name instead.
 An input written in the configuration always wins. When a stage has no configured input it takes
 the output of the stage that produced it earlier in the same run; when neither exists the run
 stops with a message naming the configuration key and the stage that would have supplied it.
-Nothing is guessed, no stage is silently skipped, and no stage falls back to a reduced behaviour
-or writes placeholder files: a stage either does what its name says or stops the run.
 
 Three commands do not run anything, which makes them useful for checking a setup:
 
@@ -112,8 +110,8 @@ Every atom of every structure becomes one row of a feature matrix of per-atom de
 from the potential (`DeepPot.eval_descriptor`). DIRECT sampling — BIRCH clustering in a
 PCA-reduced space, a fixed number of rows per cluster — picks rows, and the rows are mapped back
 onto the structures they came from. The point is to spend DFT time on structures that are not
-near-duplicates of each other. The element order comes from the model itself, so an element the
-loaded model does not know about is reported by name rather than crashing in a list lookup.
+near-duplicates of each other. The element order comes from the model itself; an element the
+model does not know is reported by name.
 
 ## Stage 3 — DFT labelling and validation
 
@@ -121,8 +119,8 @@ loaded model does not know about is reported by name rather than crashing in a l
   then `matdisc dft-submit -r runs/BaCdP/calculations`
 - **In:** a structure file or a directory of them; `--kind relax|static|band|hse-relax|hse-static`.
   A file is taken as given; a directory is globbed for `*.cif`, `*.vasp`, `POSCAR*` and `CONTCAR*`.
-  In a pipeline run the stage hands over the structures it has already read, so the files it
-  validated are exactly the ones written — `*.xyz` and `*.extxyz` candidates included.
+  In a pipeline run the stage uses the structures already read by the previous stage, `*.xyz` and
+  `*.extxyz` included.
 - **Out:** `calculations/<name>/` holding INCAR, POSCAR, KPOINTS where the set needs one, POTCAR
   (or `POTCAR.spec`) and `submit.slurm`.
 - **Needs:** nothing to write the inputs. Real POTCARs need `$PMG_VASP_PSP_DIR`; running the jobs
@@ -140,9 +138,9 @@ charge density (`ICHARG` 11, 1 and 1), so a `CHGCAR` from a converged `--kind st
 same structure has to be copied in before they can start. The stage logs a warning and lists
 `CHGCAR` under `requires`.
 
-No POTCAR files are in this repository and none may be redistributed. Without a pseudopotential
-directory the stage still writes everything else and leaves a `POTCAR.spec` listing the symbols the
-run needs, so inputs can be prepared and inspected on a machine that has no VASP licence.
+Without a pseudopotential directory the stage still writes everything else and leaves a
+`POTCAR.spec` listing the symbols the run needs, so inputs can be prepared and inspected on a
+machine that has no VASP licence.
 
 Finished calculations are read back with `matdisc.dft.outputs.collect_results`, which prefers
 `vasprun.xml` and falls back to `OUTCAR` plus `CONTCAR`. Its `id`, `composition` and
@@ -162,7 +160,7 @@ or convert both sides to formation energies with
 - **Needs:** dpdata for the conversion, DeePMD-kit's `dp` command for the training, a GPU.
 
 Without `--run` the stage prepares the dataset and the configuration and stops, reporting
-`prepared`; it does not claim to have trained anything. With `--run` it invokes
+`prepared`. With `--run` it invokes
 `dp --pt train <config> --finetune <checkpoint> --model-branch <head>` and returns the checkpoint,
 which the screening and phonon stages of the same run then use automatically unless the
 configuration names a checkpoint of its own.

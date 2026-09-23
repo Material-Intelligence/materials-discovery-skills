@@ -147,7 +147,7 @@ def check_dynamical_stability(
             is ``None``.
         delta: Finite displacement, in A.
         relax_first: Relax the atomic positions with BFGS before displacing them. The cell
-            is left untouched, as in the workflow this was abstracted from.
+            is left untouched.
         fmax: Force criterion of that relaxation, in eV/A.
         max_steps: Step cap of that relaxation.
         require_relaxation_converged: Stop when that relaxation hits the step cap without

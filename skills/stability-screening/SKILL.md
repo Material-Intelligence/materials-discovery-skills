@@ -150,7 +150,5 @@ candidates at or below the hull.
 - **A head belongs to the energies it produced.** With a multi-task DeePMD checkpoint, a head
   that the checkpoint rejects is an error rather than a quiet reload without one, and the head
   actually used is written into `hull.csv` as `calculator_head`.
-- Output paths are resolved to absolute paths before anything runs, and nothing changes the
-  working directory, so a relative `-o` lands where you expect.
 - The demo energies are round synthetic numbers chosen to exercise the three outcomes of the
   stability test. They are not calculated values.

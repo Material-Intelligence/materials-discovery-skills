@@ -14,9 +14,9 @@ always exactly on its own hull and the answer means nothing.
 Two details worth reading the code for:
 
 * **The energy column.** This table's only energy is ``formation_energy_per_atom``, so that is
-  what both sides are read on. ``energy_per_atom`` is present but empty -- the harvest that
-  produced this file never recorded it -- and asking for it produces a clear failure rather
-  than a wrong number. Candidates and competing phases must always be on one energy scale.
+  what both sides are read on. ``energy_per_atom`` is present but empty, and asking for it
+  fails with an error rather than a wrong number. Candidates and competing phases must always
+  be on one energy scale.
 * **The atom count.** ``Ba(CdP)2`` is BaCd2P2 with five atoms per formula unit. Read with the
   parentheses ignored it becomes ``BaCdP`` with three, which is a different compound and the
   target ternary of this very system. Everything here goes through

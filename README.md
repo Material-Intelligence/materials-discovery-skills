@@ -54,22 +54,20 @@ onto the paper's workflow: [`docs/pipeline.md`](docs/pipeline.md).
 | Fine-tuning | `matdisc finetune` | DeePMD-kit, a pretrained checkpoint, finished DFT calculations, GPU |
 | Everything from a config file | `matdisc pipeline` | Whatever the stages you list need |
 
-Limitations worth knowing before you start:
+Limitations:
 
 - **No calculations are run for you.** The DFT stage writes inputs and a SLURM script and can
   submit it. VASP itself is commercial software you license and install yourself; no POTCAR files
   are included and none may be redistributed.
 - **The machine-learning backends are optional extras** and are imported inside the functions that
   use them, so `import matdisc` and every subcommand's `--help` work without them. They are large,
-  GPU-oriented and versioned independently of this package. MatterGen is not even that: it is
-  never imported, only run as a console script you install yourself.
+  GPU-oriented and versioned independently of this package.
 - **Competing-phase energies and candidate energies must be on one scale.** By default the
   screening stage relaxes both sides with the same calculator for exactly this reason; reading
   energies straight from the harvested Materials Project table is possible but has to be asked for.
-- **Nothing here reproduces the paper's results.** The paper reports 3,574 previously unreported
-  stable phosphide structures and 196 semiconductors with HSE06 gaps between 0 and 3.0 eV; running
-  this package end to end requires the same checkpoints, cluster time and DFT settings that
-  produced them.
+- **The paper's results are not included** (3,574 previously unreported stable phosphide
+  structures and 196 semiconductors with HSE06 gaps of 0–3.0 eV); reproducing them needs the same
+  checkpoints, DFT settings and compute.
 
 ## Install
 
@@ -88,11 +86,10 @@ and mp-api both require it. Optional backends are declared as extras:
 | `clustering` | maml, scikit-learn | DIRECT representative selection |
 | `dev` | pytest, ruff, black | tests and linting |
 
-Install one with `uv pip install -e ".[mlip]"`. Only the base install is exercised by the commands
-in this README; the extras pull in large, hardware-specific packages that are best installed
-against your own CUDA and compiler stack. MatterGen is not an extra: it is installed from its own
-repository (<https://github.com/microsoft/mattergen>) and is driven through its
-`mattergen-generate` console script rather than imported, so nothing here can pull it in for you.
+Install one with `uv pip install -e ".[mlip]"`. The extras pull in large, hardware-specific
+packages; install them against your own CUDA and compiler stack. MatterGen is not an extra: install
+it from its own repository (<https://github.com/microsoft/mattergen>); matdisc runs its
+`mattergen-generate` console script.
 
 Two environment variables are read when the corresponding stage runs: `MP_API_KEY` (a Materials
 Project key, issued at <https://materialsproject.org/api>) and `DPA3_MODEL_PATH` (your
@@ -152,7 +149,6 @@ skills/             seven agent skills (SKILL.md): six stage skills plus unified
 examples/           runnable examples, starting with the offline quickstart
 tests/              unit tests; network and GPU tests are marked
 docs/               pipeline.md and the provenance of the bundled data
-tools/              release_check.py, a fail-closed pre-publication scanner
 ```
 
 ## Data
@@ -161,19 +157,16 @@ Two frozen snapshots of the Ba-Cd-P worked example ship here: three structures u
 `examples/data/structures/` (Ba, BaCd, BaCd2) and a competing-phase table under `examples/data/`.
 Both are Materials Project data, licensed
 [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/); their identifiers, their provenance and
-the required citation are in [`docs/data/README.md`](docs/data/README.md). Neither is current: they
-are a frozen snapshot from an earlier harvest whose retrieval date and database version were not
-recorded.
+the required citation are in [`docs/data/README.md`](docs/data/README.md). They are demonstration
+data: the retrieval date and database version were not recorded, so values may differ from the
+current Materials Project.
 
 ## Authors and citing
 
-Developed by Benhao Zhu and Jiahao Xie. If you use this software, cite the paper it was abstracted from:
+Developed by Benhao Zhu and Jiahao Xie. If you use this software, please cite:
 
 > B. Zhu, M. Faizan, Z. Li, W. Li, F. Ren, J. Xie and L. Zhang, "Robust AI-Driven Discovery of
 > Electronic Metal Phosphide Semiconductors", [arXiv:2606.10251](https://arxiv.org/abs/2606.10251).
-
-`CITATION.cff` carries the same reference in machine-readable form, so GitHub's *Cite this
-repository* button yields it.
 
 ## Licence
 
@@ -183,7 +176,7 @@ in [`NOTICE.md`](NOTICE.md).
 
 ## Acknowledgements
 
-This package is a thin layer over other people's software and does not reimplement any of it:
+matdisc is built on:
 [pymatgen](https://github.com/materialsproject/pymatgen) and
 [mp-api](https://github.com/materialsproject/api) for structures, compositions, phase diagrams,
 VASP input and output, and Materials Project access; [ASE](https://gitlab.com/ase/ase) for

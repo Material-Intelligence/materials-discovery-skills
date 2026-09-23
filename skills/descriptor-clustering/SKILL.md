@@ -89,8 +89,7 @@ which is what makes the selection invertible.
 - **Threshold tuning costs a full DIRECT run per bisection step** (ten by default). For a
   large feature matrix, tune once, note the threshold, and pass `--threshold` afterwards.
 - **An element outside the model's type map raises** a message naming the element and the
-  size of the type map. Use a model whose type map covers your chemistry rather than editing
-  a list by hand.
+  size of the type map. Use a model whose type map covers your chemistry.
 - **Descriptors are model-specific.** A selection made with one checkpoint is not transferable
   to another, and neither is a tuned threshold.
 - Descriptor extraction needs the model object itself, not an ASE calculator. Use

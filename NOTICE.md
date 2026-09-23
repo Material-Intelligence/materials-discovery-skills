@@ -69,13 +69,12 @@ licence with attribution.
 > to accelerating materials innovation", *APL Materials* **1**(1), 011002 (2013),
 > [doi:10.1063/1.4812323](https://doi.org/10.1063/1.4812323)
 
-The bundled files are a frozen snapshot from an earlier harvest: neither the retrieval date nor
-the database version current at that time was recorded, and `docs/data/README.md` says so. Treat
-the values as demonstration data, not as the Materials Project's current numbers. The changes made
-to the redistributed table — the `composition` and `natoms` columns were re-derived with
-`pymatgen.core.Composition` — are listed there as CC BY 4.0 requires. ICSD collection codes that
-appear in file names and in the `icsd_ids` column are Materials Project cross-references, not ICSD
-data.
+The retrieval date and database version of the bundled files were not recorded. Treat the values
+as demonstration data, not as the Materials Project's current numbers. The changes made to the
+redistributed table — the `composition` and `natoms` columns were re-derived with
+`pymatgen.core.Composition` — are listed in `docs/data/README.md` as CC BY 4.0 requires. ICSD
+collection codes that appear in file names and in the `icsd_ids` column are Materials Project
+cross-references, not ICSD data.
 
 Access to the Materials Project API requires your own key, read from the `MP_API_KEY`
 environment variable.

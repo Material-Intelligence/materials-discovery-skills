@@ -25,7 +25,7 @@ wiring, not a second implementation of anything.
 **How a stage gets its input.** A path written in the configuration always wins. When it is
 absent, the stage takes the output of the stage that produced it earlier in the same run.
 When neither exists the run stops with a message naming the configuration key and the stage
-that would have supplied it. Nothing is guessed and no stage is silently skipped.
+that would have supplied it.
 
 ## Prerequisites
 
